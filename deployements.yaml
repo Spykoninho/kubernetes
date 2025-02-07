@@ -1,0 +1,201 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bdd
+  labels:
+    app: bdd
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bdd
+  template:
+    metadata:
+      labels:
+        app: bdd
+    spec:
+      containers:
+        - name: bdd
+          image: postgres:17-alpine
+          envFrom:
+            - configMapRef:
+                name: bdd-env
+            - secretRef:
+                name: bdd-secret
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: bdd-persistent-storage
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: bdd-persistent-storage
+          hostPath:
+            path: /var/lib/postgresql/data
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+  labels:
+    app: redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+        - name: redis
+          image: redis:7-alpine
+          ports:
+            - containerPort: 6379
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minio
+  labels:
+    app: minio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minio
+  template:
+    metadata:
+      labels:
+        app: minio
+    spec:
+      containers:
+        - name: minio
+          image: minio/minio:latest
+          args:
+            - server
+            - --console-address
+            - ":9001"
+            - /data
+          ports:
+            - containerPort: 9000
+            - containerPort: 9001
+          envFrom:
+            - configMapRef:
+                name: minio-env
+            - secretRef:
+                name: minio-secret
+          volumeMounts:
+            - name: minio-persistent-storage
+              mountPath: /data
+      volumes:
+        - name: minio-persistent-storage
+          hostPath:
+            path: /mnt/data
+
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: s3
+  labels:
+    app: s3
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: s3
+  template:
+    metadata:
+      labels:
+        app: s3
+    spec:
+      containers:
+        - name: s3
+          image: papermerge/s3worker:0.4.3
+          envFrom:
+            - configMapRef:
+                name: s3-env
+            - secretRef:
+                name: s3-secret
+            - configMapRef:
+                name: papermerge-env
+            - secretRef:
+                name: papermerge-secret
+      volumes:
+        - name: media
+          hostPath:
+            path: /var/media/pmg
+            type: DirectoryOrCreate
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ocr
+  labels:
+    app: ocr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ocr
+  template:
+    metadata:
+      labels:
+        app: ocr
+    spec:
+      containers:
+        - name: ocr
+          image: papermerge/ocrworker:0.3.1
+          envFrom:
+            - configMapRef:
+                name: ocr-env
+            - configMapRef:
+                name: s3-env
+            - secretRef:
+                name: s3-secret
+            - configMapRef:
+                name: papermerge-env
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: papermerge
+  labels:
+    app: papermerge
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: papermerge
+  template:
+    metadata:
+      labels:
+        app: papermerge
+    spec:
+      containers:
+        - name: papermerge
+          image: papermerge/papermerge:3.3.1
+          envFrom:
+            - configMapRef:
+                name: papermerge-env
+            - secretRef:
+                name: papermerge-secret
+          ports:
+            - containerPort: 80
+      volumes:
+        - name: media
+          hostPath:
+            path: /var/media/pmg
+            type: DirectoryOrCreate
