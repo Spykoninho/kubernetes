@@ -25,12 +25,13 @@ spec:
           ports:
             - containerPort: 5432
           volumeMounts:
-            - name: bdd-persistent-storage
+            - name: data
               mountPath: /var/lib/postgresql/data
       volumes:
-        - name: bdd-persistent-storage
+        - name: data
           hostPath:
-            path: /var/lib/postgresql/data
+            path: /data/postgres
+            type: DirectoryOrCreate
 
 ---
 
@@ -97,7 +98,7 @@ spec:
         - name: minio-persistent-storage
           hostPath:
             path: /mnt/data
-
+            type: DirectoryOrCreate
 
 ---
 
