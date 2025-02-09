@@ -7,17 +7,6 @@ data:
   POSTGRES_USER: "papermerge"
 
 ---
-
-apiVersion: v1
-kind: Secret
-metadata:
-  name: bdd-secret
-type: Opaque
-data:
-  POSTGRES_PASSWORD: "cG1nLXNlY3JldA=="
-
----
-
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -26,17 +15,6 @@ data:
   MINIO_ROOT_USER: "2e8817266261610810596a50b8f4a8c5"
 
 ---
-
-apiVersion: v1
-kind: Secret
-metadata:
-  name: minio-secret
-type: Opaque
-data:
-  MINIO_ROOT_PASSWORD: "YTUwMzA3MWRlYmZhM2FjMGMxZGUxY2Q3OWY="
-
----
-
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -48,18 +26,6 @@ data:
   PAPERMERGE__S3__BUCKET_NAME: "papermerge"
 
 ---
-
-apiVersion: v1
-kind: Secret
-metadata:
-  name: s3-secret
-type: Opaque
-data:
-  AWS_ACCESS_KEY_ID: "MmU4ODE3MjY2MjYxNjEwODEwNTk2YTUwYjhmNGE4YzU="
-  AWS_SECRET_ACCESS_KEY: "YTUwMzA3MWRlYmZhM2FjMGMxZGUxY2Q3OWY="
-
----
-
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -68,7 +34,6 @@ data:
   OCR_WORKER_ARGS: "-Q ocr -c 2"
 
 ---
-
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -83,13 +48,3 @@ data:
 
 ---
 
-apiVersion: v1
-kind: Secret
-metadata:
-  name: papermerge-secret
-type: Opaque
-data:
-  PAPERMERGE__AUTH__PASSWORD: "c2VjcmV0"
-  PAPERMERGE__SECURITY__SECRET_KEY: "OGFhOTEyN2U5MDQzMjRlMWQ5M2MyYjY4NDgzYTMyN2MzYjViZTk2NGRkMTYxZTNlNGRmOGRiY2EwNDQzZWMyMQ=="
-
----
