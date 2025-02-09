@@ -4,7 +4,12 @@ Projet étudiant de Kubernetes
 
 ## Configuration des secrets
 
-Pour configurer les secrets, copiez le fichier d'exemple et remplissez les valeurs appropriées :
+Pour configurer les secrets, dupliquez ou renommez le fichier d'exemple et remplissez le avec les valeurs appropriées :
 
-```sh
-cp examples/secrets-example.yaml config/secrets.yaml
+## Deployer
+
+Ouvrer un bash puis executer le script : ./deploy.sh
+
+## Supprimer
+
+Ouvrer un bash puis executer le script : ./delete.sh
