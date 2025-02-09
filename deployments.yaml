@@ -130,6 +130,9 @@ spec:
                 name: papermerge-env
             - secretRef:
                 name: papermerge-secret
+          volumeMounts:
+            - name: media
+              mountPath: /var/media/pmg
       volumes:
         - name: media
           hostPath:
@@ -195,6 +198,9 @@ spec:
                 name: papermerge-secret
           ports:
             - containerPort: 80
+          volumeMounts:
+            - name: media
+              mountPath: /var/media/pmg
       volumes:
         - name: media
           hostPath:
